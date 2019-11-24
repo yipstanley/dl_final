@@ -17,7 +17,7 @@ def rectify(raw_data):
 
 
 def get_data():
-	with open('Piano-midi.de.pickle', 'rb') as fo:
+	with open('data/Piano-midi.de.pickle', 'rb') as fo:
 		dataset = pickle.load(fo)
 
 	raw_train_data = dataset['train']
