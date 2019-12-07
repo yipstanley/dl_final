@@ -7,8 +7,13 @@ class Model(tf.keras.Model):
 
         self.vocab_size = vocab_size
         self.window_size = window_size
-        self.embedding_size = 80
+        self.embedding_size = 128
 
+        self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.embedding_size, input_length=self.window_size)
+
+    def call(self, inputs, initial_state):
+        embeddings = self.embedding(inputs)
+        print(embeddings.shape)
 
 def ngram(input_arr, dictionary, n):
     end = input_arr.shape[0] - n
@@ -27,4 +32,13 @@ def ngram(input_arr, dictionary, n):
     return (inputs, labels)
 
 def main():
+    sequence_length = 50
     (train_data, test_data, dictionary) = get_data()
+    (train_inputs, train_labels) = ngram(train_data, dictionary, sequence_length)
+    (test_inputs, test_labels) = ngram(test_data, dictionary, sequence_length)
+
+    model = Model(sequence_length, len(dictionary))
+    model.call(train_inputs[0:25], None)
+
+if __name__ == '__main__':
+    main()
