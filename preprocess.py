@@ -23,7 +23,12 @@ def get_data():
 	raw_train_data = dataset['train']
 	raw_test_data = dataset['test']
 
-	train_data = rectify(raw_train_data)
-	test_data = rectify(raw_test_data)
+	# train_data = rectify(raw_train_data)
+	# test_data = rectify(raw_test_data)
 
-	return train_data, test_data
+	unique = np.unique(raw_train_data)
+	dictionary = {}
+	for (i, v) in enumerate(unique):
+		dictionary[v] = i
+
+	return train_data, test_data, dictionary
