@@ -20,15 +20,26 @@ def get_data():
 	with open('data/Piano-midi.de.pickle', 'rb') as fo:
 		dataset = pickle.load(fo)
 
-	raw_train_data = dataset['train']
-	raw_test_data = dataset['test']
+	train_data = dataset['train']
+	test_data = dataset['test']
 
 	# train_data = rectify(raw_train_data)
 	# test_data = rectify(raw_test_data)
-
-	unique = np.unique(raw_train_data)
 	dictionary = {}
-	for (i, v) in enumerate(unique):
-		dictionary[v] = i
+
+	counter = 0
+	for piece in train_data:
+		unique = np.unique(piece)
+		for (i, v) in enumerate(unique):
+			if str(v) not in dictionary:
+				dictionary[str(v)] = counter
+				counter += 1
+
+	for piece in test_data:
+		unique = np.unique(piece)
+		for (i, v) in enumerate(unique):
+			if str(v) not in dictionary:
+				dictionary[str(v)] = counter
+				counter += 1
 
 	return train_data, test_data, dictionary
