@@ -98,7 +98,7 @@ def generate_piece(model, input, beats, vocab, tempo=60):
 
 
 def test(model, test_inputs, vocab):
-	for piece in test_inputs:
+	for j, piece in enumerate(test_inputs):
 		input = []
 		for t in range(50):
 			input.append(vocab[str(piece[t])])
@@ -107,15 +107,26 @@ def test(model, test_inputs, vocab):
 		beats = 80
 		track = 0
 		tempo = 60
+		channel = 0
+		duration = 1
+		volume = 100
 
 		generated = generate_piece(model, input, beats, vocab, tempo)
 		midi = MIDIFile(1)
 		midi.addTempo(track, beats, tempo)
 
-		for i, pitch in enumerate(generated):
-			print(pitch)
-			return
+		for i, pitches in enumerate(generated):
+			pitches_array = pitches[1:-1].split(",")
+			for pitch in pitches_array:
+				try:
+					pitch_int = int(pitch)
+					midi.addNote(track, channel, pitch_int, i, duration, volume)
+				except ValueError:
+					continue
 
+		with open("./output/" + str(j) + ".mid", "wb") as output_file:
+			print("Writing file {} of 25".format(j + 1))
+			midi.writeFile(output_file)
 
 def main():
 	if len(sys.argv) < 2:
