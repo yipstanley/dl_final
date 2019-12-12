@@ -177,7 +177,7 @@ def main():
 
         if sys.argv[1] == "train":
                 losses = []
-                for epoch in range(3):
+                for epoch in range(10):
                         print("Epoch {0}".format(epoch + 1))
                         losses.append(train(model, train_inputs, train_labels))
                         manager.save()
