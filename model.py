@@ -142,7 +142,7 @@ def main():
         (train_inputs, train_labels) = ngram(train_data, dictionary, sequence_length)
 
         model = Model(sequence_length, len(dictionary))
-        num_epochs = 80
+        num_epochs = 750
 
         restore_checkpoint = len(sys.argv) == 3 and sys.argv[2] == "r"
         output_dir = "./output"
