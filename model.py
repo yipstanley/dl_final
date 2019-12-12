@@ -1,6 +1,8 @@
 import tensorflow as tf
 from midiutil import MIDIFile
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import os
 import sys
@@ -144,7 +146,7 @@ def visualize_data(losses):
         plt.xlabel('epochs')
         plt.ylabel('losses')
         plt.title('Loss over Time')
-        plt.show()
+        # plt.show()
         plt.savefig('loss.png')
 
 def main():
