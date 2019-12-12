@@ -1,5 +1,7 @@
 import tensorflow as tf
 from midiutil import MIDIFile
+import numpy as np
+import matplotlib.pyplot as plt
 import os
 import sys
 from preprocess import get_data
@@ -70,6 +72,7 @@ def ngram(input_arr, dictionary, n):
         return (inputs, labels)
 
 def train(model, train_inputs, train_labels):
+        losses = []
         batches = int(len(train_inputs) / model.batch_size)
         random_indices = tf.random.shuffle(tf.range(len(train_inputs)))
         shuffled_inputs = tf.gather(train_inputs, random_indices)
@@ -80,11 +83,13 @@ def train(model, train_inputs, train_labels):
                         batch_labels = shuffled_labels[i * model.batch_size: (i + 1) * model.batch_size]
                         probs, state_h, state_c = model.call(batch_train, None)
                         loss = model.loss(probs, batch_labels)
+                        losses.append(loss)
                         gradients = tape.gradient(loss, model.trainable_variables)
                         model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
                         if i % 7 == 0:
                             print("\rBatch: {0} / {1} | Loss: {2}".format(i, batches, loss), end="\r")
         print()
+        return sum(losses) / len(batches)
 
 def generate_piece(model, input, beats, vocab, tempo=60):
         reverse_vocab = {idx:word for word, idx in vocab.items()}
@@ -132,6 +137,16 @@ def test(model, test_inputs, vocab):
                         print("Writing file {} of 25".format(j + 1))
                         midi.writeFile(output_file)
 
+def visualize_data(losses):
+        x_values = np.arange(len(losses))
+        y_values = losses
+        fig, ax = plt.subplots()
+        ax.plot(x_values, y_values)
+        fig.xlabel('epochs')
+        fig.ylabel('losses')
+        fig.title('Loss over Time')
+        plt.show()
+
 def main():
         if len(sys.argv) < 2:
                 print("USAGE: python model.py <TEST/TRAIN> [r]")
@@ -159,10 +174,12 @@ def main():
                 checkpoint.restore(manager.latest_checkpoint)
 
         if sys.argv[1] == "train":
+                losses = []
                 for epoch in range(0, num_epochs):
                         print("Epoch {0}".format(epoch + 1))
-                        train(model, train_inputs, train_labels)
+                        losses.append(train(model, train_inputs, train_labels))
                         manager.save()
+                visualize_data(losses)
         elif sys.argv[1] == "test":
                 test(model, test_data, dictionary)
 
