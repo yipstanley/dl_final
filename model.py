@@ -71,10 +71,13 @@ def ngram(input_arr, dictionary, n):
 
 def train(model, train_inputs, train_labels):
 	batches = int(len(train_inputs) / model.batch_size)
+	random_indices = tf.random.shuffle(tf.range(len(train_inputs)))
+	shuffled_inputs = tf.gather(train_inputs, random_indices)
+	shuffled_labels = tf.gather(train_labels, random_indices)
 	for i in range(batches):
 		with tf.GradientTape() as tape:
-			batch_train = train_inputs[i * model.batch_size: (i + 1) * model.batch_size]
-			batch_labels = train_labels[i * model.batch_size: (i + 1) * model.batch_size]
+			batch_train = shuffled_inputs[i * model.batch_size: (i + 1) * model.batch_size]
+			batch_labels = shuffled_labels[i * model.batch_size: (i + 1) * model.batch_size]
 			probs, state_h, state_c = model.call(batch_train, None)
 			loss = model.loss(probs, batch_labels)
 			gradients = tape.gradient(loss, model.trainable_variables)
