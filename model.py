@@ -89,7 +89,7 @@ def train(model, train_inputs, train_labels):
                         if i % 7 == 0:
                             print("\rBatch: {0} / {1} | Loss: {2}".format(i, batches, loss), end="\r")
         print()
-        return sum(losses) / len(batches)
+        return sum(losses) / batches
 
 def generate_piece(model, input, beats, vocab, tempo=60):
         reverse_vocab = {idx:word for word, idx in vocab.items()}
