@@ -140,12 +140,12 @@ def test(model, test_inputs, vocab):
 def visualize_data(losses):
         x_values = np.arange(len(losses))
         y_values = losses
-        fig, ax = plt.subplots()
-        ax.plot(x_values, y_values)
-        fig.xlabel('epochs')
-        fig.ylabel('losses')
-        fig.title('Loss over Time')
+        plt.plot(x_values, y_values)
+        plt.xlabel('epochs')
+        plt.ylabel('losses')
+        plt.title('Loss over Time')
         plt.show()
+        plt.savefig('loss.png')
 
 def main():
         if len(sys.argv) < 2:
