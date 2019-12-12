@@ -151,6 +151,7 @@ def main():
 		os.makedirs(output_dir)
 	
 	if restore_checkpoint:
+		print("Restoring latest checkpoint")
 		checkpoint.restore(manager.latest_checkpoint)
 
 	if sys.argv[1] == "train":
